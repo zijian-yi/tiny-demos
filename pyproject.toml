@@ -1,0 +1,9 @@
+[project]
+name = "streaming-demo"
+version = "0.1.0"
+description = "A demo showing how LLM streaming works using Server-Sent Events (SSE)"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.133.0",
+    "uvicorn>=0.41.0",
+]
