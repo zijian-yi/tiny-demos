@@ -7,6 +7,7 @@ We simulate an LLM generating tokens one at a time.
 
 import asyncio
 import json
+import random
 import time
 from pathlib import Path
 from fastapi import FastAPI
@@ -70,7 +71,7 @@ async def generate_tokens(message: str):
 
     for token in tokens:
         # Simulate variable generation time (real LLMs have ~20-100ms per token)
-        await asyncio.sleep(0.03)
+        await asyncio.sleep(random.uniform(0.02, 0.08))
         yield token
 
 
