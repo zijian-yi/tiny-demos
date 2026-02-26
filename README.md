@@ -49,7 +49,7 @@ Both accept `{"message": "..."}` as JSON body.
 ```
 streaming-demo/
 ├── pyproject.toml    # uv project config & dependencies
-├── server.py         # FastAPI server with streaming + non-streaming endpoints
+├── server.py         # Starlette + explicit ASGI streaming (no FastAPI/Pydantic)
 ├── static/
 │   └── index.html    # Frontend: reads SSE stream and renders tokens
 └── uv.lock
