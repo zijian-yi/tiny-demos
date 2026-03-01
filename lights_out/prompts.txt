@@ -1,0 +1,9 @@
+Here is the F1 start light procedure:
+Five red lights illuminate one by one at one-second intervals.
+After all five lights are on, they remain lit for a random period of 1–5 seconds, then all lights go out simultaneously, signaling the race start.
+
+Write me a web app that simulates the F1 start light procedure:
+1. The app should be written in plain HTML, CSS, and JavaScript without any third-party libraries.
+2. The app should display five lights in the middle and follow the F1 start light procedure.
+3. After the lights go out, the user can click a button/press a key to simulate the race start procedure.
+4. The app should display the reaction time of the user.

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 Start Lights</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%);
+      font-family: 'Orbitron', monospace;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(255, 0, 0, 0.08) 0%, transparent 50%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.01) 2px,
+          rgba(255, 255, 255, 0.01) 4px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #e10600;
+      text-shadow: 
+        0 0 20px rgba(225, 6, 0, 0.5),
+        0 0 40px rgba(225, 6, 0, 0.3);
+    }
+
+    .light-bar {
+      display: flex;
+      gap: 24px;
+      padding: 30px 50px;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0d0d0d 100%);
+      border-radius: 20px;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        inset 0 2px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.5);
+      border: 3px solid #333;
+    }
+
+    .light-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .light {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #3a2020 0%, #1a0808 70%, #0a0404 100%);
+      box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.8),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.05),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+      transition: all 0.15s ease;
+      border: 3px solid #222;
+    }
+
+    .light.on {
+      background: radial-gradient(circle at 30% 30%, #ff4040 0%, #e10600 40%, #aa0000 100%);
+      box-shadow: 
+        0 0 30px rgba(225, 6, 0, 0.9),
+        0 0 60px rgba(225, 6, 0, 0.6),
+        0 0 100px rgba(225, 6, 0, 0.4),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 4px 8px rgba(255, 200, 200, 0.4);
+      border-color: #ff6666;
+    }
+
+    .status {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+    }
+
+    .status.waiting {
+      color: #888;
+    }
+
+    .status.ready {
+      color: #ff4444;
+      animation: pulse 0.8s ease-in-out infinite;
+    }
+
+    .status.go {
+      color: #00ff88;
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+      font-size: 3rem;
+      animation: flash 0.2s ease;
+    }
+
+    .status.result {
+      color: #00ddff;
+      text-shadow: 0 0 15px rgba(0, 221, 255, 0.6);
+    }
+
+    .status.jump-start {
+      color: #ff4444;
+      text-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    @keyframes flash {
+      0% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .reaction-time {
+      font-size: 4rem;
+      font-weight: 900;
+      color: #00ff88;
+      text-shadow: 
+        0 0 30px rgba(0, 255, 136, 0.8),
+        0 0 60px rgba(0, 255, 136, 0.4);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reaction-time.slow {
+      color: #ffaa00;
+      text-shadow: 
+        0 0 30px rgba(255, 170, 0, 0.8),
+        0 0 60px rgba(255, 170, 0, 0.4);
+    }
+
+    .reaction-time.fast {
+      color: #00ff88;
+    }
+
+    .reaction-time.jump {
+      color: #ff4444;
+      text-shadow: 
+        0 0 30px rgba(255, 68, 68, 0.8),
+        0 0 60px rgba(255, 68, 68, 0.4);
+    }
+
+    .btn {
+      padding: 18px 50px;
+      font-family: 'Orbitron', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(180deg, #e10600 0%, #aa0000 100%);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 
+        0 6px 20px rgba(225, 6, 0, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 10px 30px rgba(225, 6, 0, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      background: linear-gradient(180deg, #444 0%, #333 100%);
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .instructions {
+      position: fixed;
+      bottom: 40px;
+      color: #555;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    .instructions kbd {
+      background: #222;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      margin: 0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>It’s lights out and away we go!</h1>
+    
+    <div class="light-bar">
+      <div class="light-column">
+        <div class="light" id="light-1"></div>
+        <div class="light" id="light-1b"></div>
+      </div>
+      <div class="light-column">
+        <div class="light" id="light-2"></div>
+        <div class="light" id="light-2b"></div>
+      </div>
+      <div class="light-column">
+        <div class="light" id="light-3"></div>
+        <div class="light" id="light-3b"></div>
+      </div>
+      <div class="light-column">
+        <div class="light" id="light-4"></div>
+        <div class="light" id="light-4b"></div>
+      </div>
+      <div class="light-column">
+        <div class="light" id="light-5"></div>
+        <div class="light" id="light-5b"></div>
+      </div>
+    </div>
+
+    <div class="status waiting" id="status">Press Start to Begin</div>
+    
+    <div class="reaction-time" id="reaction-time"></div>
+    
+    <button class="btn" id="start-btn">Start</button>
+  </div>
+
+  <div class="instructions">
+    Press <kbd>Space</kbd> or <kbd>Click</kbd> anywhere when lights go out
+  </div>
+
+  <script>
+    const lights = [
+      [document.getElementById('light-1'), document.getElementById('light-1b')],
+      [document.getElementById('light-2'), document.getElementById('light-2b')],
+      [document.getElementById('light-3'), document.getElementById('light-3b')],
+      [document.getElementById('light-4'), document.getElementById('light-4b')],
+      [document.getElementById('light-5'), document.getElementById('light-5b')]
+    ];
+    const statusEl = document.getElementById('status');
+    const reactionTimeEl = document.getElementById('reaction-time');
+    const startBtn = document.getElementById('start-btn');
+
+    let state = 'idle'; // idle, countdown, waiting, go, finished
+    let lightsOutTime = 0;
+    let timeouts = [];
+
+    // Audio context for sound effects
+    let audioContext = null;
+
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function playBeep(frequency = 880, duration = 0.08, volume = 0.3) {
+      if (!audioContext) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'square';
+      
+      // Sharp attack, quick decay for that punchy F1 beep
+      const now = audioContext.currentTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(volume, now + 0.005);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+      
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+
+    function playLightOnSound() {
+      // Classic F1 starting lights beep - punchy mid-frequency tone
+      playBeep(880, 0.1, 0.25);
+    }
+
+    function clearAllTimeouts() {
+      timeouts.forEach(t => clearTimeout(t));
+      timeouts = [];
+    }
+
+    function turnOnLight(index) {
+      lights[index].forEach(light => light.classList.add('on'));
+      playLightOnSound();
+    }
+
+    function turnOffAllLights() {
+      lights.forEach(pair => pair.forEach(light => light.classList.remove('on')));
+    }
+
+    function setStatus(text, className) {
+      statusEl.textContent = text;
+      statusEl.className = 'status ' + className;
+    }
+
+    function startSequence() {
+      if (state !== 'idle') return;
+      
+      initAudio(); // Initialize audio on user interaction
+      
+      state = 'countdown';
+      startBtn.disabled = true;
+      reactionTimeEl.textContent = '';
+      reactionTimeEl.className = 'reaction-time';
+      setStatus('Get Ready...', 'waiting');
+      turnOffAllLights();
+
+      // Turn on lights one by one at 1-second intervals
+      for (let i = 0; i < 5; i++) {
+        const t = setTimeout(() => {
+          turnOnLight(i);
+          if (i === 4) {
+            // All lights on, now wait random 1-5 seconds
+            state = 'waiting';
+            setStatus('Hold...', 'ready');
+            
+            const randomDelay = 1000 + Math.random() * 4000;
+            const t2 = setTimeout(() => {
+              // Lights out - GO!
+              turnOffAllLights();
+              lightsOutTime = performance.now();
+              state = 'go';
+              setStatus('GO!', 'go');
+            }, randomDelay);
+            timeouts.push(t2);
+          }
+        }, (i + 1) * 1000);
+        timeouts.push(t);
+      }
+    }
+
+    function handleReaction() {
+      if (state === 'countdown' || state === 'waiting') {
+        // Jump start!
+        clearAllTimeouts();
+        turnOffAllLights();
+        state = 'finished';
+        setStatus('Jump Start!', 'jump-start');
+        reactionTimeEl.textContent = 'FALSE START';
+        reactionTimeEl.className = 'reaction-time jump';
+        startBtn.disabled = false;
+        
+        setTimeout(() => {
+          state = 'idle';
+          setStatus('Press Start to Try Again', 'waiting');
+        }, 1000);
+        
+      } else if (state === 'go') {
+        // Valid reaction
+        const reactionTime = performance.now() - lightsOutTime;
+        state = 'finished';
+        
+        const timeInSeconds = (reactionTime / 1000).toFixed(3);
+        reactionTimeEl.textContent = timeInSeconds + 's';
+        
+        if (reactionTime < 200) {
+          setStatus('Incredible!', 'result');
+          reactionTimeEl.className = 'reaction-time fast';
+        } else if (reactionTime < 300) {
+          setStatus('Excellent!', 'result');
+          reactionTimeEl.className = 'reaction-time fast';
+        } else if (reactionTime < 400) {
+          setStatus('Good!', 'result');
+          reactionTimeEl.className = 'reaction-time';
+        } else {
+          setStatus('Keep Practicing!', 'result');
+          reactionTimeEl.className = 'reaction-time slow';
+        }
+        
+        startBtn.disabled = false;
+        
+        setTimeout(() => {
+          state = 'idle';
+          setStatus('Press Start to Try Again', 'waiting');
+        }, 1000);
+      }
+    }
+
+    startBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (state === 'idle') {
+        startSequence();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (state === 'idle') {
+          startSequence();
+        } else {
+          handleReaction();
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target !== startBtn && state !== 'idle') {
+        handleReaction();
+      }
+    });
+  </script>
+</body>
+</html>
